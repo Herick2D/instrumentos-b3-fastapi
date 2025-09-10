@@ -1,0 +1,15 @@
+
+fastapi
+uvicorn[standard]
+python-multipart
+
+pymongo
+
+redis
+celery
+
+pandas
+openpyxl
+
+pydantic[email]
+python-dotenv
