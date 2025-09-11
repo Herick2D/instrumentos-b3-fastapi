@@ -1,8 +1,9 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException, status
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends, status
 from pymongo import MongoClient
 from datetime import datetime
-from api.config import get_settings
-from api.tasks import process_file_task
+from config import get_settings
+from tasks import process_file_task
+from auth import get_api_key
 
 router = APIRouter()
 settings = get_settings()
@@ -11,6 +12,7 @@ settings = get_settings()
 @router.post("/upload", status_code=status.HTTP_202_ACCEPTED)
 async def upload_file(
         file: UploadFile = File(...),
+        api_key: str = Depends(get_api_key)
 ):
     allowed_content_types = [
         'text/csv',
@@ -40,3 +42,4 @@ async def upload_file(
     process_file_task.delay(file_content_bytes, file.filename, file.content_type)
 
     return {"message": "Arquivo recebido e em processamento.", "filename": file.filename}
+

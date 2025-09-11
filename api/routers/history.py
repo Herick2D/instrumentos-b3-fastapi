@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Query
-from typing import Optional
-from datetime import datetime
+from fastapi import APIRouter, Query, Depends
 from pymongo import MongoClient
+from datetime import datetime
+from typing import Optional
 from bson import json_util
 import json
 
-from api.config import get_settings
-
+from config import get_settings
+from auth import get_api_key
 
 router = APIRouter()
 settings = get_settings()
@@ -16,6 +16,7 @@ settings = get_settings()
 def get_upload_history(
         filename: Optional[str] = Query(None, description="Filtrar por nome do arquivo"),
         ref_date: Optional[datetime] = Query(None, description="Filtrar por data de referência (YYYY-MM-DD)"),
+        api_key: str = Depends(get_api_key)
 ):
     client = MongoClient(settings.MONGO_URI)
     db = client.file_database

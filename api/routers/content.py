@@ -1,24 +1,25 @@
 import redis
 import json
-from fastapi import APIRouter, Query
-from typing import Optional
+from fastapi import APIRouter, Query, Depends, HTTPException
+from typing import Optional, List
 from pymongo import MongoClient
 
-from api.config import get_settings
-from api.models import StockData
+from config import get_settings
+from auth import get_api_key
+from models import StockData
 
 router = APIRouter()
 settings = get_settings()
 
 redis_client = redis.Redis.from_url(settings.REDIS_URI, decode_responses=True)
 
-
-@router.get("/content", response_model=list[StockData])
+@router.get("/content", response_model=List[StockData])
 def get_file_content(
         TckrSymb: Optional[str] = Query(None, description="Filtrar por símbolo do ticker"),
         RptDt: Optional[str] = Query(None, description="Filtrar por data do relatório (YYYY-MM-DD)"),
         page: int = Query(1, ge=1),
         page_size: int = Query(20, ge=1, le=100),
+        api_key: str = Depends(get_api_key)
 ):
     cache_key = f"content_query:{TckrSymb}:{RptDt}:{page}:{page_size}"
 
@@ -40,6 +41,9 @@ def get_file_content(
     results = list(cursor)
     client.close()
 
-    redis_client.set(cache_key, json.dumps(results), ex=300)
+    serializable_results = [item.dict() for item in map(StockData.parse_obj, results)]
+
+    redis_client.set(cache_key, json.dumps(serializable_results), ex=300)
 
     return results
+

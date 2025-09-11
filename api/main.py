@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api.routers import upload, history, content
+from routers import upload, history, content
 
 app = FastAPI(
     title="Instrumentos B3 API",
