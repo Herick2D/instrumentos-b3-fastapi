@@ -1,6 +1,6 @@
 import redis
 import json
-from fastapi import APIRouter, Query, Depends, HTTPException
+from fastapi import APIRouter, Query, Depends
 from typing import Optional, List
 from pymongo import MongoClient
 
@@ -41,9 +41,6 @@ def get_file_content(
     results = list(cursor)
     client.close()
 
-    serializable_results = [item.dict() for item in map(StockData.parse_obj, results)]
-
-    redis_client.set(cache_key, json.dumps(serializable_results), ex=300)
+    redis_client.set(cache_key, json.dumps(results), ex=300)
 
     return results
-
