@@ -1,5 +1,5 @@
 # Instrumentos B3 - FastAPI
-Esta é uma API de alta performance desenvolvida em Python com o framework FastAPI. Sua principal finalidade é receber e processar os arquivos InstrumentsConsolidatedFile da B3 (nos formatos CSV e Excel), realizando a leitura de forma assíncrona em segundo plano e disponibilizando os dados extraídos para consulta através de endpoints seguros.
+Esta é uma API de alta performance desenvolvida em Python com o framework FastAPI. Sua principal finalidade é receber e processar os arquivos **InstrumentsConsolidatedFile da B3** (nos formatos CSV e Excel), realizando a leitura de forma assíncrona em segundo plano e disponibilizando os dados extraídos para consulta através de endpoints seguros.
 O sistema foi projetado para ser robusto e escalável, utilizando uma arquitetura baseada em contêineres e uma fila de processamento para lidar com arquivos grandes sem bloquear a resposta ao usuário.
 
 ## Tecnologias
